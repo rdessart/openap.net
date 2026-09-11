@@ -1,8 +1,7 @@
 """Using fuzzy logic to identify flight phase in trajectory data."""
 
-from matplotlib import pyplot as plt
-
 import numpy as np
+from openap._plot import get_pyplot
 from openap.extra import fuzzy
 
 
@@ -167,7 +166,8 @@ class FlightPhase:
         return labels
 
     def plot_logics(self):
-        """Visualize fuzzy logic membership functions."""
+        """Visualize fuzzy logic membership functions (requires ``openap[plot]``)."""
+        plt = get_pyplot()
         plt.figure(figsize=(10, 8))
 
         plt.subplot(411)

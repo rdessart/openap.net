@@ -1,9 +1,9 @@
-from matplotlib import pyplot as plt
 from scipy.interpolate import UnivariateSpline
 from scipy.ndimage import convolve1d
 from scipy.signal.windows import gaussian
 
 import numpy as np
+from openap._plot import get_pyplot
 
 
 class BaseFilter:
@@ -40,6 +40,8 @@ class BaseFilter:
         return np.array(Xfull), np.array(Yfull)
 
     def filterplot(self, x, y, xf, yf):
+        """Plot original and filtered data (requires ``openap[plot]``)."""
+        plt = get_pyplot()
         plt.plot(x, y, ".", color="blue", alpha=0.5)
         plt.plot(xf, yf, "-", color="red")
 

@@ -881,10 +881,9 @@ wheels = [
 
 [[package]]
 name = "openap"
-version = "2.6.0"
+version = "2.6.1"
 source = { editable = "." }
 dependencies = [
-    { name = "matplotlib" },
     { name = "numpy" },
     { name = "pandas" },
     { name = "pyyaml" },
@@ -895,12 +894,16 @@ dependencies = [
 all = [
     { name = "casadi" },
     { name = "jax" },
+    { name = "matplotlib" },
 ]
 casadi = [
     { name = "casadi" },
 ]
 jax = [
     { name = "jax" },
+]
+plot = [
+    { name = "matplotlib" },
 ]
 
 [package.dev-dependencies]
@@ -919,13 +922,14 @@ requires-dist = [
     { name = "casadi", marker = "extra == 'casadi'", specifier = ">=3.6" },
     { name = "jax", marker = "extra == 'all'", specifier = ">=0.4" },
     { name = "jax", marker = "extra == 'jax'", specifier = ">=0.4" },
-    { name = "matplotlib", specifier = ">=3.8" },
+    { name = "matplotlib", marker = "extra == 'all'", specifier = ">=3.8" },
+    { name = "matplotlib", marker = "extra == 'plot'", specifier = ">=3.8" },
     { name = "numpy", specifier = ">=2.1" },
     { name = "pandas", specifier = ">=2.0" },
     { name = "pyyaml", specifier = ">=6.0" },
     { name = "scipy", specifier = ">=1.14" },
 ]
-provides-extras = ["casadi", "jax", "all"]
+provides-extras = ["casadi", "jax", "plot", "all"]
 
 [package.metadata.requires-dev]
 dev = [

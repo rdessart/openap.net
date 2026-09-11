@@ -10,9 +10,10 @@ from openap.backends import BackendType
 
 # Type alias for numeric inputs (scalar, array, or symbolic)
 Numeric = Any
-from openap.extra import ndarrayconvert
 from openap.aero import fpm, kts
+from openap.extra import ndarrayconvert
 
+from ._plot import get_pyplot
 from .base import FuelFlowBase
 
 
@@ -202,6 +203,8 @@ class FuelFlow(FuelFlowBase):
     def plot_model(self, plot=True):
         """Plot the engine fuel model, or return the pyplot object.
 
+        Requires the ``openap[plot]`` extra, including when ``plot=False``.
+
         Args:
             plot (bool): Display the plot or return an object.
 
@@ -209,7 +212,7 @@ class FuelFlow(FuelFlowBase):
             None or pyplot object.
 
         """
-        import matplotlib.pyplot as plt
+        plt = get_pyplot()
 
         x = [0.07, 0.3, 0.85, 1.0]
         y = [

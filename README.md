@@ -26,6 +26,16 @@ Install the development branch from GitHub (may not be stable):
 pip install --upgrade git+https://github.com/junzis/openap
 ```
 
+Plotting is optional. Install the plotting dependencies when needed:
+
+```sh
+pip install "openap[plot]"
+```
+
+Aircraft models, flight-phase identification, filtering, and statistical fitting
+work without Matplotlib. Plotting functions load Matplotlib only when called.
+The `openap[all]` extra includes plotting and both optional backends.
+
 ## Content
 
 ### Model Data
@@ -97,7 +107,7 @@ Install with optional backend support:
 ```sh
 pip install openap[casadi]  # CasADi backend
 pip install openap[jax]     # JAX backend
-pip install openap[all]     # Both backends
+pip install openap[all]     # Both backends and plotting
 ```
 
 ### Usage

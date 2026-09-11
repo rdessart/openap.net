@@ -1,9 +1,9 @@
 """Fit data using different statistical models."""
 
 import scipy.stats
-from matplotlib import pyplot as plt
 
 import numpy as np
+from openap._plot import get_pyplot
 
 
 def fit(data, models):
@@ -67,6 +67,8 @@ def fit(data, models):
 
 
 def fitplot(data, model, **kwargs):
+    """Plot a fitted distribution (requires ``openap[plot]``)."""
+    plt = get_pyplot()
     fitresults = fit(data, model)
 
     if "bins" in kwargs:
@@ -77,7 +79,7 @@ def fitplot(data, model, **kwargs):
 
     data = np.array(data)
     data = data[np.isfinite(data)]
-    plt.hist(data, bins=bins, normed=True, color="gray", edgecolor="none", alpha=0.3)
+    plt.hist(data, bins=bins, density=True, color="gray", edgecolor="none", alpha=0.3)
     plt.plot(
         fitresults[model]["pdfx"], fitresults[model]["pdfy"], label=model, **kwargs
     )

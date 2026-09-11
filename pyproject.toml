@@ -1,6 +1,6 @@
 [project]
 name = "openap"
-version = "2.6.0"
+version = "2.6.1"
 description = "Open Aircraft Performance Model (OpenAP) in Python"
 authors = [{ name = "Junzi Sun", email = "git@junzis.com" }]
 license = { text = "GNU LGPL v3" }
@@ -20,7 +20,6 @@ dependencies = [
     "scipy>=1.14",
     "pandas>=2.0",
     "pyyaml>=6.0",
-    "matplotlib>=3.8",
 ]
 
 [project.urls]
@@ -31,7 +30,8 @@ issues = "https://github.com/junzis/openap/issues"
 [project.optional-dependencies]
 casadi = ["casadi>=3.6"]
 jax = ["jax>=0.4"]
-all = ["casadi>=3.6", "jax>=0.4"]
+plot = ["matplotlib>=3.8"]
+all = ["casadi>=3.6", "jax>=0.4", "matplotlib>=3.8"]
 
 [dependency-groups]
 dev = [
