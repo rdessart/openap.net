@@ -152,12 +152,8 @@ def _manual_bada4_rating_thrust(ac, bada_path, tas, alt, rating, dT=0.0):
     bxml = bada4.load_bada4(ac, bada_path)
     a_coeff = [float(v.text) for v in bxml.findall("./PFM/TFM/CT/a")]
     kink = float(bxml.findtext(f"./PFM/TFM/{rating}/kink"))
-    b_coeff = [
-        float(v.text) for v in bxml.findall(f"./PFM/TFM/{rating}/flat_rating/b")
-    ]
-    c_coeff = [
-        float(v.text) for v in bxml.findall(f"./PFM/TFM/{rating}/temp_rating/c")
-    ]
+    b_coeff = [float(v.text) for v in bxml.findall(f"./PFM/TFM/{rating}/flat_rating/b")]
+    c_coeff = [float(v.text) for v in bxml.findall(f"./PFM/TFM/{rating}/temp_rating/c")]
 
     h = alt * thrust.aero.ft
     v = tas * thrust.aero.kts
@@ -171,9 +167,7 @@ def _manual_bada4_rating_thrust(ac, bada_path, tas, alt, rating, dT=0.0):
         delta_t = _poly2(b_coeff, (6, 6), delta_terms_6, mach_terms_6)
     else:
         theta_t = theta * (1 + mach**2 * (1.4 - 1) / 2)
-        temp_terms = [theta_t**i for i in range(5)] + [
-            delta**i for i in range(1, 5)
-        ]
+        temp_terms = [theta_t**i for i in range(5)] + [delta**i for i in range(1, 5)]
         mach_terms_5 = [mach**i for i in range(5)]
         delta_t = _poly2(c_coeff, (9, 5), temp_terms, mach_terms_5)
 
@@ -188,9 +182,7 @@ def test_bada3_drag_clean_supports_casadi_symbolics(casadi, bada3_model):
         mass=60000.0, tas=300.0, alt=12000.0
     )
 
-    drag = bada3.Drag(
-        "A320", bada_path="", model=bada3_model, backend=CasadiBackend()
-    )
+    drag = bada3.Drag("A320", bada_path="", model=bada3_model, backend=CasadiBackend())
     mass = casadi.SX.sym("mass")
     tas = casadi.SX.sym("tas")
     alt = casadi.SX.sym("alt")
@@ -318,15 +310,15 @@ def test_bada3_drag_uses_temperature_deviation_in_density(bada3_model):
 
 
 def test_bada3_fuel_nominal_uses_temperature_deviation_in_thrust_cap(bada3_model):
+    # Keep the idle floor below nominal fuel so this tests the thrust cap.
+    bada3_model["CfDes"] = [10.0, 80000.0]
     fuel_flow = bada3.FuelFlow("A320", bada_path="", model=bada3_model)
 
-    result = fuel_flow.nominal(
-        mass=60000.0, tas=300.0, alt=12000.0, vs=6000.0, dT=20.0
-    )
+    result = fuel_flow.nominal(mass=60000.0, tas=300.0, alt=12000.0, vs=6000.0, dT=20.0)
 
     eta = bada3_model["Cf"][0] * (1 + 300.0 / bada3_model["Cf"][1]) * 1e-3
     expected = eta * fuel_flow.thrust.climb(tas=300.0, alt=12000.0, dT=20.0)
-    expected = max(expected, fuel_flow.idle(60000.0, 300.0, 12000.0, 6000.0))
+    expected = max(expected, 60.0 * fuel_flow.idle(60000.0, 300.0, 12000.0, 6000.0))
 
     assert result == pytest.approx(expected / 60.0)
     assert result < fuel_flow.nominal(
@@ -366,9 +358,7 @@ def test_bada4_drag_clean_supports_casadi_symbolics(casadi, bada4_path):
 
 
 def test_bada4_thrust_climb_supports_casadi_symbolics(casadi, bada4_path):
-    numeric = bada4.Thrust("A320-TEST", bada4_path).climb(
-        tas=300.0, alt=12000.0
-    )
+    numeric = bada4.Thrust("A320-TEST", bada4_path).climb(tas=300.0, alt=12000.0)
 
     thrust = bada4.Thrust("A320-TEST", bada4_path, backend=CasadiBackend())
     tas = casadi.SX.sym("tas")
@@ -400,9 +390,7 @@ def test_bada4_takeoff_uses_mtkf_rating(bada4_path):
     thrust = bada4.Thrust("A320-TEST", bada4_path)
 
     result = thrust.takeoff(tas=150.0, alt=0.0)
-    expected = _manual_bada4_rating_thrust(
-        "A320-TEST", bada4_path, 150.0, 0.0, "MTKF"
-    )
+    expected = _manual_bada4_rating_thrust("A320-TEST", bada4_path, 150.0, 0.0, "MTKF")
 
     assert result == pytest.approx(expected)
     assert result != pytest.approx(thrust.climb(tas=150.0, alt=0.0))
@@ -488,9 +476,7 @@ def test_bada4_clean_drag_polar_params_reconstruct_drag(bada4_path):
     rho = drag.aero.density(h)
     qS = 0.5 * rho * v**2 * drag.S
     cl = mass * drag.aero.g0 / max(qS, 1e-3)
-    expected = qS * (
-        params["cd0"] + params["cd2"] * cl**2 + params["cd6"] * cl**6
-    )
+    expected = qS * (params["cd0"] + params["cd2"] * cl**2 + params["cd6"] * cl**6)
 
     assert drag.clean(mass=mass, tas=tas, alt=alt) == pytest.approx(expected)
 
@@ -508,9 +494,7 @@ def test_bada4_clean_drag_polar_params_reconstruct_divergence_drag(bada4_path):
     rho = drag.aero.density(h)
     qS = 0.5 * rho * v**2 * drag.S
     cl = mass * drag.aero.g0 / max(qS, 1e-3)
-    expected = qS * (
-        params["cd0"] + params["cd2"] * cl**2 + params["cd6"] * cl**6
-    )
+    expected = qS * (params["cd0"] + params["cd2"] * cl**2 + params["cd6"] * cl**6)
 
     assert drag.clean(mass=mass, tas=tas, alt=alt) == pytest.approx(expected)
 
@@ -601,9 +585,7 @@ def test_bada4_fuel_enroute_supports_casadi_symbolics(casadi, bada4_path):
         mass=60000.0, tas=300.0, alt=12000.0, vs=500.0
     )
 
-    fuel_flow = bada4.FuelFlow(
-        "A320-TEST", bada4_path, backend=CasadiBackend()
-    )
+    fuel_flow = bada4.FuelFlow("A320-TEST", bada4_path, backend=CasadiBackend())
     mass = casadi.SX.sym("mass")
     tas = casadi.SX.sym("tas")
     alt = casadi.SX.sym("alt")
@@ -649,3 +631,26 @@ def test_bada4_smooth_fuel_switch_supports_symbolic_derivative(casadi, bada4_pat
 
     assert float(value) > 0
     assert np.isfinite(float(derivative))
+
+
+@pytest.mark.parametrize("smooth", [False, True])
+@pytest.mark.parametrize("symbolic", [False, True])
+def test_bada3_nominal_respects_idle_floor_in_kg_s(
+    casadi, bada3_model, smooth, symbolic
+):
+    """Descent fuel must not fall below the BADA idle rate."""
+    bada3_model["CfDes"] = [10.0, 80000.0]
+    options = {"backend": CasadiBackend()} if symbolic else {}
+    fuel_flow = bada3.FuelFlow(
+        "A320", bada_path="", model=bada3_model, smooth=smooth, **options
+    )
+    vs = casadi.MX.sym("vs") if symbolic else -4000.0
+    nominal = fuel_flow.nominal(60000.0, 300.0, 12000.0, vs)
+    if symbolic:
+        nominal = float(casadi.Function("nominal", [vs], [nominal])(-4000.0))
+    idle_kg_s = 10.0 * (1.0 - 12000.0 / 80000.0) / 60.0
+    assert float(nominal) >= idle_kg_s - 1e-12
+    if smooth:
+        assert float(nominal) <= idle_kg_s + 0.0025
+    else:
+        assert float(nominal) == pytest.approx(idle_kg_s)

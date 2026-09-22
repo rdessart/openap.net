@@ -614,10 +614,12 @@ class FuelFlow(base.FuelFlowBase):
         else:
             raise ValueError("Unknown engine type.")
 
-        # nominal must be at least idle
-        f_idle = self.idle(mass, tas, alt, vs)
+        # Compare in kg/min: idle() returns kg/s, while f_nom is kg/min.
+        f_idle = self.idle(mass, tas, alt, vs) * 60.0
         if self.smooth:
-            f_nom = self.backend.smooth_max(f_nom, f_idle, softness=1e-3)
+            # Avoid a near-kink in the fuel dynamics. This width bounds
+            # the idle-floor smoothing bias by 0.0025 kg/s (0.3 / 120).
+            f_nom = self.backend.smooth_max(f_nom, f_idle, softness=0.3)
         else:
             f_nom = self.backend.maximum(f_nom, f_idle)
         return f_nom / 60.0  # conversion [kg/min] -> [kg/s]
