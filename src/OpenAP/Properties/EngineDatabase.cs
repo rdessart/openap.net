@@ -79,6 +79,13 @@ public sealed class EngineDatabase
 
             var fields = CsvReader.ParseLine(line);
 
+            // A few rows in the upstream ICAO table are intentionally sparse.
+            // Pandas represents those cells as NaN. For the strongly typed
+            // performance model we only materialize rows with the complete
+            // core data required by OpenAP thrust/fuel calculations.
+            if (!HasCoreEngineData(fields, indices))
+                continue;
+
             string RequiredString(string name)
             {
                 var value = GetField(fields, indices, name);
@@ -158,6 +165,23 @@ public sealed class EngineDatabase
         }
 
         return result;
+    }
+
+    private static bool HasCoreEngineData(
+        IReadOnlyList<string> fields,
+        IReadOnlyDictionary<string, int> indices)
+    {
+        string[] required =
+        [
+            "uid", "name", "manufacturer", "type", "bpr", "pr", "max_thrust",
+            "ei_hc_to", "ei_hc_co", "ei_hc_app", "ei_hc_idl",
+            "ei_co_to", "ei_co_co", "ei_co_app", "ei_co_idl",
+            "ei_nox_to", "ei_nox_co", "ei_nox_app", "ei_nox_idl",
+            "ff_to", "ff_co", "ff_app", "ff_idl", "fuel_lto"
+        ];
+
+        return required.All(
+            name => !string.IsNullOrWhiteSpace(GetField(fields, indices, name)));
     }
 
     private static string GetField(
