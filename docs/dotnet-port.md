@@ -44,6 +44,40 @@ var engine = EngineDatabase
 Aircraft YAML is read with a small schema-oriented parser and engine CSV with a
 small CSV reader. Neither uses reflection or runtime code generation.
 
+### Thrust
+
+`ThrustModel` ports the simplified two-shaft turbofan model from
+`openap/thrust.py`.
+
+Its public API intentionally uses the same units as Python OpenAP:
+
+- TAS: knots
+- altitude: feet
+- rate of climb: feet/min
+- temperature deviation: K / degC
+- thrust: newtons
+
+Implemented operations:
+
+- takeoff thrust
+- climb thrust
+- cruise thrust
+- descent-idle approximation
+- aircraft/engine compatibility validation
+
+Example:
+
+```csharp
+var aircraftDb = AircraftDatabase.FromOpenApDataDirectory(dataDirectory);
+var engineDb = EngineDatabase.FromOpenApDataDirectory(dataDirectory);
+
+var thrust = new ThrustModel("A320", aircraftDb, engineDb);
+
+double takeoffNewton = thrust.Takeoff(
+    trueAirspeedKnots: 150,
+    altitudeFeet: 0);
+```
+
 ## Compatibility strategy
 
 Reference values are generated from the Python implementation and asserted by
