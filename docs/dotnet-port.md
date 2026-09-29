@@ -43,6 +43,29 @@ wrappers because Python OpenAP still re-exports those functions from
 The .NET port intentionally implements scalar math rather than reproducing
 Python's NumPy/JAX/CasADi backend abstraction.
 
+### Flight phases
+
+`FlightPhaseModel` ports `openap/phase.py` without bringing NumPy or
+scikit-fuzzy into the .NET runtime.
+
+It includes:
+
+- fuzzy phase labeling: `GND`, `CL`, `DE`, `CR`, `LVL`
+- 60-second default aggregation windows
+- takeoff / initial-climb segmentation
+- climb, cruise and descent boundaries
+- final-approach and landing detection
+- phase-index extraction for `TO`, `IC`, `CL`, `CR`, `DE`, `FA`,
+  `LD`, and `END`
+
+Input units match upstream OpenAP: time in seconds, altitude in feet, TAS in
+knots and rate of climb in ft/min.
+
+The port intentionally preserves OpenAP's current window-loop semantics:
+the highest numbered time bucket is not processed by `phaselabel()`, so that
+bucket remains `NA`. This behavior is covered by parity tests rather than
+silently corrected in the compatibility layer.
+
 ### Aircraft, engine and drag-polar properties
 
 `AircraftDatabase`, `EngineDatabase` and `DragPolarDatabase` provide
