@@ -59,6 +59,30 @@ The typed aircraft model now names `mfc` as
 `MaximumFuelCapacityLiters` and cruise range as `RangeNauticalMiles` so
 their units are explicit.
 
+### Kinematic / WRAP
+
+`WrapDatabase` and `WrapModel` port `openap/kinematic.py` and the WRAP
+fixed-width datasets under `openap/data/wrap`.
+
+The parser is dependency-free and preserves the complete statistical record for
+each WRAP variable:
+
+- default/optimal value
+- minimum and maximum
+- statistical model name
+- statistical-model parameters
+- variable key, flight phase and descriptive name
+
+All 33 public accessors currently exposed by Python OpenAP's `WRAP` class are
+available on `WrapModel`. Generic access through `GetVariable()` also makes
+the remaining dataset rows available without adding a dedicated API method.
+
+WRAP synonym resolution is enabled by default, matching Python OpenAP. The raw
+WRAP units are intentionally preserved for parity: speeds are generally m/s,
+ranges are km, altitude values are km, vertical rates are m/s, accelerations are
+m/s², and Mach/angle values are dimensionless/degrees as represented by the
+upstream dataset.
+
 ### Fuel flow
 
 `FuelFlowModel` ports the active performance calculations from
