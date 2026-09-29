@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenAP", "src\OpenAP\OpenAP.csproj", "{221F7E81-2CF4-49C6-8A45-5417D2677361}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenAP.Tests", "tests\OpenAP.Tests\OpenAP.Tests.csproj", "{8C532C67-D453-4E16-B650-E128956AC30A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{221F7E81-2CF4-49C6-8A45-5417D2677361}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{221F7E81-2CF4-49C6-8A45-5417D2677361}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{221F7E81-2CF4-49C6-8A45-5417D2677361}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{221F7E81-2CF4-49C6-8A45-5417D2677361}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C532C67-D453-4E16-B650-E128956AC30A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C532C67-D453-4E16-B650-E128956AC30A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C532C67-D453-4E16-B650-E128956AC30A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C532C67-D453-4E16-B650-E128956AC30A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
