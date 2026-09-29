@@ -44,6 +44,21 @@ the core assembly. Callers point the databases at an OpenAP data directory.
 
 Its public API follows Python OpenAP units: knots, feet, ft/min and newtons.
 
+### Mass estimation
+
+`MassModel.FromRange()` ports `openap/mass.py`. It estimates aircraft mass
+from flight distance and payload load factor using the same OpenAP assumptions:
+
+- range fraction is clipped to 0.2–1.0
+- `mfc` is interpreted as fuel capacity in **liters**
+- fuel volume is converted with the upstream fixed factor `0.8025 kg/L`
+- payload capacity is derived from MTOW, OEW and maximum fuel mass
+- the result can be returned either in kilograms or as a fraction of MTOW
+
+The typed aircraft model now names `mfc` as
+`MaximumFuelCapacityLiters` and cruise range as `RangeNauticalMiles` so
+their units are explicit.
+
 ### Fuel flow
 
 `FuelFlowModel` ports the active performance calculations from

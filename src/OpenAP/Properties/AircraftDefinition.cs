@@ -17,7 +17,7 @@ public readonly record struct AircraftLimits(
     double MaximumTakeoffMassKg,
     double MaximumLandingMassKg,
     double OperatingEmptyMassKg,
-    double MaximumFuelCapacityKg,
+    double MaximumFuelCapacityLiters,
     double MaximumOperatingSpeedKnots,
     double MaximumOperatingMach,
     double CeilingMeters);
@@ -58,7 +58,7 @@ public sealed record EngineInstallation(
 public readonly record struct CruiseDefinition(
     double HeightMeters,
     double Mach,
-    double Range);
+    double RangeNauticalMiles);
 
 public readonly record struct DragDefinition(
     double ZeroLiftCoefficient,

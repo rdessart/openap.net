@@ -19,10 +19,11 @@ public sealed class PropertyDatabaseTests
         Assert.Equal(78_000.0, aircraft.Limits.MaximumTakeoffMassKg);
         Assert.Equal(66_000.0, aircraft.Limits.MaximumLandingMassKg);
         Assert.Equal(42_600.0, aircraft.Limits.OperatingEmptyMassKg);
-        Assert.Equal(24_210.0, aircraft.Limits.MaximumFuelCapacityKg);
+        Assert.Equal(24_210.0, aircraft.Limits.MaximumFuelCapacityLiters);
         Assert.Equal(350.0, aircraft.Limits.MaximumOperatingSpeedKnots);
         Assert.Equal(0.82, aircraft.Limits.MaximumOperatingMach);
         Assert.Equal(12_500.0, aircraft.Limits.CeilingMeters);
+        Assert.Equal(5_750.0, aircraft.Cruise.RangeNauticalMiles);
 
         Assert.Equal(124.0, aircraft.Wing.AreaSquareMeters);
         Assert.Equal(35.8, aircraft.Wing.SpanMeters);
