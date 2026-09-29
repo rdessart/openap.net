@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <IsAotCompatible>true</IsAotCompatible>
+    <IsTrimmable>true</IsTrimmable>
+    <AssemblyName>OpenAP</AssemblyName>
+    <RootNamespace>OpenAP</RootNamespace>
+    <PackageId>OpenAP.NET</PackageId>
+    <Description>High-performance .NET implementation of the Open Aircraft Performance Model.</Description>
+  </PropertyGroup>
+
+</Project>
