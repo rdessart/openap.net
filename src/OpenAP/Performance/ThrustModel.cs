@@ -30,13 +30,14 @@ public sealed class ThrustModel
         AircraftDatabase aircraftDatabase,
         EngineDatabase engineDatabase,
         string? engineName = null,
-        bool forceEngine = false)
+        bool forceEngine = false,
+        bool useSynonym = false)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(aircraftIcaoCode);
         ArgumentNullException.ThrowIfNull(aircraftDatabase);
         ArgumentNullException.ThrowIfNull(engineDatabase);
 
-        var aircraft = aircraftDatabase.Get(aircraftIcaoCode);
+        var aircraft = aircraftDatabase.Get(aircraftIcaoCode, useSynonym);
         var selectedEngineName = engineName ?? aircraft.Engines.DefaultEngine;
         var engine = engineDatabase.Get(selectedEngineName);
 

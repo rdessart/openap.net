@@ -44,6 +44,27 @@ the core assembly. Callers point the databases at an OpenAP data directory.
 
 Its public API follows Python OpenAP units: knots, feet, ft/min and newtons.
 
+### Fuel flow
+
+`FuelFlowModel` ports the active performance calculations from
+`openap/fuel.py`:
+
+- fuel flow at a requested total aircraft thrust
+- takeoff fuel flow using `ThrustModel`
+- en-route fuel flow using `DragModel` and the longitudinal force balance
+- aircraft-specific fuel-model coefficients with the same engine scaling logic
+  as Python OpenAP
+- fallback to the upstream `default` fuel model when no aircraft-specific
+  model is available
+
+The public API follows Python OpenAP units: thrust in N, mass in kg, TAS in
+knots, altitude in feet, vertical speed in ft/min, acceleration in m/s² and
+fuel flow in kg/s.
+
+The upstream `limit` argument on `enroute()` is currently not used by
+OpenAP's implementation; the .NET port retains it for API parity and documents
+that behavior.
+
 ### Drag
 
 `DragModel` ports `openap/drag.py`:
