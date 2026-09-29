@@ -8,7 +8,7 @@ under `src/`.
 
 ### Aeronautical calculations
 
-The first porting milestone covers the numerical foundation in `openap/aero.py`:
+The numerical foundation from `openap/aero.py` includes:
 
 - ISA pressure, density and temperature
 - speed of sound
@@ -19,45 +19,22 @@ The first porting milestone covers the numerical foundation in `openap/aero.py`:
 - CAS/Mach conversion
 - CAS/Mach crossover altitude
 
-The .NET API uses the same SI-unit conventions as the Python implementation.
-Unit conversion constants are exposed in `AeroConstants`.
+The .NET aero API uses SI units internally. Unit conversion constants are
+exposed through `AeroConstants`.
 
-### Aircraft and engine properties
+### Aircraft, engine and drag-polar properties
 
-`AircraftDatabase` and `EngineDatabase` provide strongly typed equivalents
-of the relevant parts of `openap/prop.py`.
+`AircraftDatabase`, `EngineDatabase` and `DragPolarDatabase` provide
+strongly typed equivalents of the OpenAP property/data access used by the
+performance models.
 
-The .NET implementation deliberately does **not** embed the upstream model data
-into the core assembly. Instead, callers point the databases at an OpenAP data
-directory:
-
-```csharp
-var aircraft = AircraftDatabase
-    .FromOpenApDataDirectory(dataDirectory)
-    .Get("A320");
-
-var engine = EngineDatabase
-    .FromOpenApDataDirectory(dataDirectory)
-    .Get(aircraft.Engines.DefaultEngine);
-```
-
-Aircraft YAML is read with a small schema-oriented parser and engine CSV with a
-small CSV reader. Neither uses reflection or runtime code generation.
+The .NET implementation deliberately does **not** embed upstream model data into
+the core assembly. Callers point the databases at an OpenAP data directory.
 
 ### Thrust
 
 `ThrustModel` ports the simplified two-shaft turbofan model from
-`openap/thrust.py`.
-
-Its public API intentionally uses the same units as Python OpenAP:
-
-- TAS: knots
-- altitude: feet
-- rate of climb: feet/min
-- temperature deviation: K / degC
-- thrust: newtons
-
-Implemented operations:
+`openap/thrust.py`, including:
 
 - takeoff thrust
 - climb thrust
@@ -65,28 +42,45 @@ Implemented operations:
 - descent-idle approximation
 - aircraft/engine compatibility validation
 
-Example:
+Its public API follows Python OpenAP units: knots, feet, ft/min and newtons.
 
-```csharp
-var aircraftDb = AircraftDatabase.FromOpenApDataDirectory(dataDirectory);
-var engineDb = EngineDatabase.FromOpenApDataDirectory(dataDirectory);
+### Drag
 
-var thrust = new ThrustModel("A320", aircraftDb, engineDb);
+`DragModel` ports `openap/drag.py`:
 
-double takeoffNewton = thrust.Takeoff(
-    trueAirspeedKnots: 150,
-    altitudeFeet: 0);
+- clean drag
+- optional experimental wave drag
+- flap drag increment
+- landing-gear drag increment
+- flap-dependent induced-drag adjustment
+- drag-polar synonym handling
+
+The public API follows Python OpenAP units: mass in kg, TAS in knots,
+altitude in feet, vertical speed in ft/min, flap angle in degrees and drag in N.
+
+Like upstream OpenAP, the drag calculation derives lift coefficient by assuming
+the wing supports approximately aircraft weight:
+
 ```
+L = m g cos(gamma)
+CL = L / qS
+```
+
+That is appropriate for airborne use but **not** for our future takeoff ground
+roll. The ground-roll simulator should reuse the polar coefficients while
+calculating lift from angle of attack/configuration and accounting for wheel
+normal force separately.
 
 ## Compatibility strategy
 
-Reference values are generated from the Python implementation and asserted by
-the xUnit project in `tests/OpenAP.Tests`. New ports should follow the same
-pattern so formula changes cannot silently break OpenAP parity.
+Reference-value generators under `reference/python/` exercise the original
+Python implementation, while xUnit tests assert corresponding .NET results.
+New ports should follow this pattern so formula changes cannot silently break
+OpenAP parity.
 
 The .NET library is marked AOT-compatible and trimmable. Runtime reflection,
-dynamic code generation and reflection-based YAML/CSV deserialization should be
-avoided in hot simulation paths.
+dynamic code generation and reflection-based serialization should be avoided
+in hot simulation paths.
 
 ## Licensing
 
