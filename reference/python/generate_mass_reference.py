@@ -4,7 +4,7 @@ from openap import mass
 
 
 def main() -> None:
-    for distance in (0.0, 500.0, 1150.0, 2875.0, 5750.0, 7000.0):
+    for distance in (0.0, 500.0, 1000.0, 2500.0, 5000.0, 7000.0):
         value = mass.from_range(
             "A320",
             distance,
@@ -15,7 +15,7 @@ def main() -> None:
             f"{float(value):.17g}"
         )
 
-    for distance in (0.0, 2875.0, 5750.0):
+    for distance in (0.0, 2500.0, 5000.0):
         value = mass.from_range(
             "A320",
             distance,
