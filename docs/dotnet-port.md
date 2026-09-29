@@ -83,6 +83,30 @@ ranges are km, altitude values are km, vertical rates are m/s, accelerations are
 m/s², and Mach/angle values are dimensionless/degrees as represented by the
 upstream dataset.
 
+### Emissions
+
+`EmissionModel` ports `openap/emission.py` and uses the typed ICAO engine
+emission indices already exposed by `EngineDatabase`.
+
+Implemented emissions are:
+
+- CO₂
+- H₂O
+- soot
+- SOx
+- NOx
+- CO
+- unburned hydrocarbons (HC)
+
+CO₂, H₂O, soot and SOx scale directly with total aircraft fuel flow. NOx, CO
+and HC use the Boeing Fuel Flow Method 2 sea-level-equivalent correction and
+the same piecewise-linear interpolation over idle, approach, climb-out and
+takeoff engine data as Python OpenAP.
+
+Public units match upstream OpenAP: total aircraft fuel flow in kg/s, TAS in
+knots, altitude in feet, temperature deviation in K/°C and emission rate in
+g/s.
+
 ### Fuel flow
 
 `FuelFlowModel` ports the active performance calculations from
