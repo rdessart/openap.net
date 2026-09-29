@@ -230,6 +230,53 @@ public static class Aero
             temperatureDeviationKelvin);
 
     /// <summary>
+    /// Backward-compatible geographic distance wrapper. Geographic helpers
+    /// moved from aero.py to geo.py upstream but remain exposed there.
+    /// </summary>
+    public static double Distance(
+        double latitude1Degrees,
+        double longitude1Degrees,
+        double latitude2Degrees,
+        double longitude2Degrees,
+        double altitudeMeters = 0.0)
+        => Geography.Geo.Distance(
+            latitude1Degrees,
+            longitude1Degrees,
+            latitude2Degrees,
+            longitude2Degrees,
+            altitudeMeters);
+
+    /// <summary>
+    /// Backward-compatible initial-bearing wrapper.
+    /// </summary>
+    public static double Bearing(
+        double latitude1Degrees,
+        double longitude1Degrees,
+        double latitude2Degrees,
+        double longitude2Degrees)
+        => Geography.Geo.Bearing(
+            latitude1Degrees,
+            longitude1Degrees,
+            latitude2Degrees,
+            longitude2Degrees);
+
+    /// <summary>
+    /// Backward-compatible forward-geodesic wrapper.
+    /// </summary>
+    public static Geography.GeoPoint LatLon(
+        double latitudeDegrees,
+        double longitudeDegrees,
+        double distanceMeters,
+        double bearingDegrees,
+        double altitudeMeters = 0.0)
+        => Geography.Geo.Destination(
+            latitudeDegrees,
+            longitudeDegrees,
+            distanceMeters,
+            bearingDegrees,
+            altitudeMeters);
+
+    /// <summary>
     /// Computes the CAS/Mach crossover altitude in meters.
     /// </summary>
     public static double CrossoverAltitude(

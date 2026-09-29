@@ -22,6 +22,27 @@ The numerical foundation from `openap/aero.py` includes:
 The .NET aero API uses SI units internally. Unit conversion constants are
 exposed through `AeroConstants`.
 
+### Geography
+
+`OpenAP.Geography.Geo` ports the scalar geographic functionality from
+`openap/geo.py`:
+
+- Haversine great-circle distance on OpenAP's 6,371,000 m mean Earth radius
+- initial great-circle bearing
+- forward destination point from distance and bearing
+- Spencer-1971 solar zenith angle
+- altitude-adjusted spherical radius for distance/destination calculations
+- UTC Unix-timestamp support for solar calculations
+
+The geographic functions use degrees for latitude/longitude/bearing and meters
+for distance/altitude, exactly as upstream. `Aero.Distance()`,
+`Aero.Bearing()`, and `Aero.LatLon()` are retained as compatibility
+wrappers because Python OpenAP still re-exports those functions from
+`aero.py`.
+
+The .NET port intentionally implements scalar math rather than reproducing
+Python's NumPy/JAX/CasADi backend abstraction.
+
 ### Aircraft, engine and drag-polar properties
 
 `AircraftDatabase`, `EngineDatabase` and `DragPolarDatabase` provide
