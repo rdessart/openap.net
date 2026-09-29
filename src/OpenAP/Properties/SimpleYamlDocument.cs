@@ -36,7 +36,9 @@ internal sealed class SimpleYamlDocument
             while (stack.Count > 0 && stack[^1].Indent >= indent)
                 stack.RemoveAt(stack.Count - 1);
 
-            var line = trimmedStart.TrimEnd();
+            var line = StripInlineComment(trimmedStart).TrimEnd();
+            if (line.Length == 0)
+                continue;
 
             if (line.StartsWith("- ", StringComparison.Ordinal))
             {
@@ -137,6 +139,30 @@ internal sealed class SimpleYamlDocument
 
         var prefix = string.Join('.', stack.Select(item => item.Key));
         return leaf is null ? prefix : $"{prefix}.{leaf}";
+    }
+
+    private static string StripInlineComment(string value)
+    {
+        var singleQuoted = false;
+        var doubleQuoted = false;
+
+        for (var i = 0; i < value.Length; i++)
+        {
+            switch (value[i])
+            {
+                case '\'' when !doubleQuoted:
+                    singleQuoted = !singleQuoted;
+                    break;
+                case '"' when !singleQuoted:
+                    doubleQuoted = !doubleQuoted;
+                    break;
+                case '#' when !singleQuoted && !doubleQuoted &&
+                              (i == 0 || char.IsWhiteSpace(value[i - 1])):
+                    return value[..i].TrimEnd();
+            }
+        }
+
+        return value;
     }
 
     private static string Unquote(string value)
