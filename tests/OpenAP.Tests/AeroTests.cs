@@ -1,5 +1,6 @@
 using OpenAP.Aero;
 using Xunit;
+using AeroModel = OpenAP.Aero.Aero;
 
 namespace OpenAP.Tests;
 
@@ -16,7 +17,7 @@ public sealed class AeroTests
         double expectedDensity,
         double expectedTemperature)
     {
-        var result = Aero.Atmosphere(altitudeMeters);
+        var result = AeroModel.Atmosphere(altitudeMeters);
 
         AssertClose(expectedPressure, result.PressurePascal, 1e-8);
         AssertClose(expectedDensity, result.DensityKgPerCubicMeter, 1e-12);
@@ -33,7 +34,7 @@ public sealed class AeroTests
     {
         AssertClose(
             expectedMetersPerSecond,
-            Aero.SpeedOfSound(altitudeMeters),
+            AeroModel.SpeedOfSound(altitudeMeters),
             1e-10);
     }
 
@@ -47,7 +48,7 @@ public sealed class AeroTests
     {
         AssertClose(
             expectedAltitudeMeters,
-            Aero.IsaAltitude(pressurePascal),
+            AeroModel.IsaAltitude(pressurePascal),
             1e-9);
     }
 
@@ -58,11 +59,11 @@ public sealed class AeroTests
         var speed = 250.0 * AeroConstants.KnotToMetersPerSecond;
 
         var casFromTas =
-            Aero.TasToCas(speed, altitudeMeters) /
+            AeroModel.TasToCas(speed, altitudeMeters) /
             AeroConstants.KnotToMetersPerSecond;
 
         var tasFromCas =
-            Aero.CasToTas(speed, altitudeMeters) /
+            AeroModel.CasToTas(speed, altitudeMeters) /
             AeroConstants.KnotToMetersPerSecond;
 
         AssertClose(216.0784741565601, casFromTas, 1e-9);
@@ -75,7 +76,7 @@ public sealed class AeroTests
         var cas = 300.0 * AeroConstants.KnotToMetersPerSecond;
 
         var altitudeFeet =
-            Aero.CrossoverAltitude(cas, 0.78) /
+            AeroModel.CrossoverAltitude(cas, 0.78) /
             AeroConstants.FootToMeter;
 
         AssertClose(29314.13874040608, altitudeFeet, 1e-8);
@@ -84,8 +85,8 @@ public sealed class AeroTests
     [Fact]
     public void Atmosphere_ClampsTemperatureDeviationLikeOpenAp()
     {
-        var plus15 = Aero.Atmosphere(0.0, 15.0);
-        var plus100 = Aero.Atmosphere(0.0, 100.0);
+        var plus15 = AeroModel.Atmosphere(0.0, 15.0);
+        var plus100 = AeroModel.Atmosphere(0.0, 100.0);
 
         Assert.Equal(plus15, plus100);
     }
