@@ -14,9 +14,9 @@ public sealed class MassModelTests
     [Theory]
     [InlineData(0.0, 0.8, 59_262.885)]
     [InlineData(500.0, 0.8, 59_262.885)]
-    [InlineData(1_150.0, 0.8, 59_262.885)]
-    [InlineData(2_875.0, 0.8, 65_091.4425)]
-    [InlineData(5_750.0, 0.8, 74_805.705)]
+    [InlineData(1_000.0, 0.8, 59_262.885)]
+    [InlineData(2_500.0, 0.8, 65_091.4425)]
+    [InlineData(5_000.0, 0.8, 74_805.705)]
     [InlineData(7_000.0, 0.8, 74_805.705)]
     public void FromRange_MatchesPythonOpenApReference(
         double distanceNauticalMiles,
@@ -34,8 +34,8 @@ public sealed class MassModelTests
 
     [Theory]
     [InlineData(0.0, 0.759780576923077)]
-    [InlineData(2_875.0, 0.834505673076923)]
-    [InlineData(5_750.0, 0.9590475)]
+    [InlineData(2_500.0, 0.834505673076923)]
+    [InlineData(5_000.0, 0.9590475)]
     public void FromRange_FractionMatchesPythonOpenApReference(
         double distanceNauticalMiles,
         double expectedFraction)
@@ -68,13 +68,13 @@ public sealed class MassModelTests
 
         var normal = MassModel.FromRange(
             "A320",
-            2_875.0,
+            2_500.0,
             database,
             loadFactor: 1.0);
 
         var overbooked = MassModel.FromRange(
             "A320",
-            2_875.0,
+            2_500.0,
             database,
             loadFactor: 1.1);
 
