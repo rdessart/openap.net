@@ -1,4 +1,5 @@
 using OpenAP.Aero;
+using Xunit;
 
 namespace OpenAP.Tests;
 
